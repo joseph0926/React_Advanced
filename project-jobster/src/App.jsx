@@ -1,7 +1,8 @@
 import React from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
-import { DashboradPage, ErrorPage, LandingPage, Root, SignPage } from "./pages";
+import { ErrorPage, LandingPage, Root, SignPage } from "./pages";
+import { AddJobPage, AllJobsPage, ProfilePage, StatsPage } from "./pages/dashboard";
 
 import "react-toastify/dist/ReactToastify.css";
 
@@ -12,11 +13,14 @@ const App = () => {
       element: <Root />,
       errorElement: <ErrorPage />,
       children: [
-        { index: true, element: <DashboradPage /> },
-        { path: "landing", element: <LandingPage /> },
-        { path: "sign", element: <SignPage /> },
+        { index: true, element: <StatsPage /> },
+        { path: "all-jobs", element: <AllJobsPage /> },
+        { path: "add-job", element: <AddJobPage /> },
+        { path: "profile", element: <ProfilePage /> },
       ],
     },
+    { path: "/landing", element: <LandingPage /> },
+    { path: "/sign", element: <SignPage /> },
   ]);
 
   return (
