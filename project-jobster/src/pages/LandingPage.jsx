@@ -3,6 +3,7 @@ import main from "../assets/images/main.svg";
 import Logo from "../components/Logo";
 
 import styled from "styled-components";
+import { Link } from "react-router-dom";
 
 const LandingPage = () => {
   return (
@@ -17,7 +18,9 @@ const LandingPage = () => {
             job <span>tracking</span> app
           </h1>
           <p>some text</p>
-          <button className="btn btn-hero">Login/Register</button>
+          <Link to="/sign" className="btn btn-hero">
+            Login/Register
+          </Link>
         </div>
         <img src={main} alt="job hunt" className="img main-img" />
       </div>

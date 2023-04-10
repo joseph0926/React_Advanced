@@ -1,11 +1,13 @@
 import React from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, redirect } from "react-router-dom";
 
 import SmallSidebar from "../components/SmallSidebar";
 import BigSidebar from "../components/BigSidebar";
 import Navbar from "../components/Navbar";
 
 import styled from "styled-components";
+import { useSelector } from "react-redux";
+import { getUserFromLocalStorage } from "../utils/localStorage";
 
 const Root = () => {
   return (
@@ -23,6 +25,15 @@ const Root = () => {
     </Wrapper>
   );
 };
+
+export async function loader() {
+  // const user = await useSelector((state) => state.user);
+  const token = await getUserFromLocalStorage();
+  if (!token) {
+    return redirect("/landing");
+  }
+  return null;
+}
 
 const Wrapper = styled.section`
   .dashboard {

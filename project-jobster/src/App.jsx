@@ -2,7 +2,13 @@ import React from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import { ErrorPage, LandingPage, Root, SignPage } from "./pages";
-import { AddJobPage, AllJobsPage, ProfilePage, StatsPage } from "./pages/dashboard";
+import {
+  AddJobPage,
+  AllJobsPage,
+  ProfilePage,
+  StatsPage,
+} from "./pages/dashboard";
+import { loader as protecteRouteLoader } from "./pages/Root";
 
 import "react-toastify/dist/ReactToastify.css";
 
@@ -12,6 +18,7 @@ const App = () => {
       path: "/",
       element: <Root />,
       errorElement: <ErrorPage />,
+      loader: protecteRouteLoader,
       children: [
         { index: true, element: <StatsPage /> },
         { path: "all-jobs", element: <AllJobsPage /> },

@@ -1,34 +1,43 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
-import { getUserFromLocalStorage, addUserToLocalStorage, removeUserFromLocalStorage } from "../../utils/localStorage";
+import {
+  getUserFromLocalStorage,
+  addUserToLocalStorage,
+  removeUserFromLocalStorage,
+} from "../../utils/localStorage";
+import { redirect } from "react-router-dom";
 
 const url = "https://jobify-prod.herokuapp.com/api/v1/toolkit";
 
 const initialState = {
   isLoading: false,
+  isSidebarOpen: false,
   user: getUserFromLocalStorage(),
 };
 
-export const signup = createAsyncThunk("user/signup", async (user, thunkAPI) => {
-  console.log(user);
-  try {
-    const response = await fetch(`${url}/auth/register`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(user),
-    });
-    const data = await response.json();
+export const signup = createAsyncThunk(
+  "user/signup",
+  async (user, thunkAPI) => {
+    console.log(user);
+    try {
+      const response = await fetch(`${url}/auth/register`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(user),
+      });
+      const data = await response.json();
 
-    if (!response.ok) {
-      throw data;
+      if (!response.ok) {
+        throw data;
+      }
+      return data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.msg);
     }
-    return data;
-  } catch (error) {
-    return thunkAPI.rejectWithValue(error.msg);
   }
-});
+);
 export const login = createAsyncThunk("user/login", async (user, thunkAPI) => {
   try {
     const response = await fetch(`${url}/auth/login`, {
@@ -52,6 +61,16 @@ export const login = createAsyncThunk("user/login", async (user, thunkAPI) => {
 const userSlice = createSlice({
   name: "user",
   initialState,
+  reducers: {
+    toggleSidebar: (state) => {
+      state.isSidebarOpen = !state.isSidebarOpen;
+    },
+    logout: (state) => {
+      state.user = null;
+      state.isSidebarOpen = false;
+      removeUserFromLocalStorage();
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(signup.pending, (state) => {
@@ -87,5 +106,7 @@ const userSlice = createSlice({
       });
   },
 });
+
+export const { toggleSidebar, logout } = userSlice.actions;
 
 export default userSlice.reducer;
