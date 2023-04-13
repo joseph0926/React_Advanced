@@ -5,7 +5,7 @@ const InputHelper = ({ type, name, value, handleChange, labelText }) => {
         {labelText || name}
       </label>
 
-      <input type={type} value={value} name={name} onChange={handleChange} className="form-input" />
+      <input id={name} type={type} value={value} name={name} onChange={handleChange} className="form-input" />
     </div>
   );
 };
