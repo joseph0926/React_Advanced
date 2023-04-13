@@ -6,7 +6,7 @@ import InputHelper from "../../components/InputHelper";
 
 import styled from "styled-components";
 import InputSelectorHelper from "../../components/InputSelectorHelper";
-import { changeHandler, clearHandler, createJob } from "../../store/job/job-slice";
+import { changeHandler, clearHandler, createJob, editJob } from "../../store/job/job-slice";
 
 const AddJobPage = () => {
   const dispatchFn = useDispatch();
@@ -26,6 +26,22 @@ const AddJobPage = () => {
 
     if (!position || !company || !jobLocation) {
       toast.error("입력칸을 비울수 없습니다.");
+      return;
+    }
+
+    if (isEditing) {
+      dispatchFn(
+        editJob({
+          jobId: editJobId,
+          job: {
+            position,
+            company,
+            jobLocation,
+            jobType,
+            status,
+          },
+        })
+      );
       return;
     }
 
