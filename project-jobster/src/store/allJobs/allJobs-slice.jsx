@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
 
-const url = "https://jobify-prod.herokuapp.com/api/v1/toolkit";
+const baseUrl = "https://jobify-prod.herokuapp.com/api/v1/toolkit";
 
 const initialFiltersState = {
   search: "",
@@ -23,8 +23,15 @@ const initialState = {
 };
 
 export const getAllJobs = createAsyncThunk("allJobs/getAllJobs", async (_, thunkAPI) => {
+  const { page, search, searchStatus, searchType, sort } = thunkAPI.getState().allJobs;
+
+  let url = `${baseUrl}/jobs?status=${searchStatus}&jobType=${searchType}&sort=${sort}&page=${page}`;
+  if (search) {
+    url = url + `&search=${search}`;
+  }
+
   try {
-    const response = await fetch(`${url}/jobs`, {
+    const response = await fetch(url, {
       method: "GET",
       headers: {
         authorization: `Bearer ${thunkAPI.getState().user.user.token}`,
@@ -43,7 +50,7 @@ export const getAllJobs = createAsyncThunk("allJobs/getAllJobs", async (_, thunk
 
 export const showStats = createAsyncThunk("allJobs/showStats", async (_, thunkAPI) => {
   try {
-    const response = await fetch(`${url}/jobs/stats`, {
+    const response = await fetch(`${baseUrl}/jobs/stats`, {
       method: "GET",
       headers: {
         authorization: `Bearer ${thunkAPI.getState().user.user.token}`,
@@ -70,6 +77,9 @@ const allJobsSlice = createSlice({
     hideLoading: (state) => {
       state.isLoading = false;
     },
+    changePage: (state, { payload }) => {
+      state.page = payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -79,6 +89,8 @@ const allJobsSlice = createSlice({
       .addCase(getAllJobs.fulfilled, (state, { payload }) => {
         state.isLoading = false;
         state.jobs = payload.jobs;
+        state.numOfPages = payload.numOfPages;
+        state.totalJobs = payload.totalJobs;
       })
       .addCase(getAllJobs.rejected, (state, { payload }) => {
         state.isLoading = false;
@@ -99,6 +111,6 @@ const allJobsSlice = createSlice({
   },
 });
 
-export const { showLoading, hideLoading } = allJobsSlice.actions;
+export const { showLoading, hideLoading, changePage } = allJobsSlice.actions;
 
 export default allJobsSlice.reducer;

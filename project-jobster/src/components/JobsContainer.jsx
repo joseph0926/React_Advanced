@@ -6,14 +6,16 @@ import Loading from "./Loading";
 import { getAllJobs } from "../store/allJobs/allJobs-slice";
 
 import styled from "styled-components";
+import PageBtnContainer from "./PageBtnContainer.jsx";
 
 const JobsContainer = () => {
   const dispatchFn = useDispatch();
-  const { jobs, isLoading } = useSelector((state) => state.allJobs);
+  const { jobs, isLoading, page, totalJobs, numOfPages, search, searchStatus, searchType, sort } = useSelector((state) => state.allJobs);
 
   useEffect(() => {
     dispatchFn(getAllJobs());
-  }, []);
+    // eslint-disable-next-line
+  }, [page, search, searchStatus, searchType, sort]);
 
   if (isLoading) {
     return <Loading />;
@@ -29,12 +31,15 @@ const JobsContainer = () => {
 
   return (
     <Wrapper>
-      <h5>jobs info</h5>
+      <h5>
+        {totalJobs} Job{jobs.length > 1 && "s"} Found
+      </h5>
       <div className="jobs">
         {jobs.map((job) => {
           return <Job key={job._id} {...job} />;
         })}
       </div>
+      {numOfPages > 1 && <PageBtnContainer />}
     </Wrapper>
   );
 };
